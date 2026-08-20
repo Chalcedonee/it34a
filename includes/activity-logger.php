@@ -5,10 +5,9 @@ function logActivity($pdo,$user_id,$email,$action, $status='success'){
         $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
 
         // String to Array
-        if (strpos($ip,',') !== false) {
-            $ip = trim(explode(',', $ip)[0]);
-        };
-
+        if (strops($ip,',') !==false){
+            $ip = trim(explode(',',$ip[0]));
+        }
         //Get User Agent (Browser)
         $user_agent = substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', 0, 255);
 
@@ -23,6 +22,16 @@ function logActivity($pdo,$user_id,$email,$action, $status='success'){
                 user_agent
             ) VALUES (?,?,?,?,?,?)
          ");
+
+        // Execute the query
+        $success = $stmt->execute([
+            $user_id,
+            $email,
+            $action,
+            $status,
+            $ip_address,
+            $user_agent
+        ]);
 
     } catch (PDOException $e) {
         error_log("Activity Log Error: " . $e->getMessage());

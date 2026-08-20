@@ -7,7 +7,7 @@ function logActivity($pdo,$user_id,$email,$action, $status='success'){
         // String to Array
         if (strpos($ip,',') !== false) {
             $ip = trim(explode(',', $ip)[0]);
-        }
+        };
 
         //Get User Agent (Browser)
         $user_agent = substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', 0, 255);
@@ -27,6 +27,6 @@ function logActivity($pdo,$user_id,$email,$action, $status='success'){
     } catch (PDOException $e) {
         error_log("Activity Log Error: " . $e->getMessage());
         return false;
-    }
+    };
 }
 ?>

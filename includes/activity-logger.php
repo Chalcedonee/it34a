@@ -17,8 +17,8 @@ function logActivity(
         }
 
         // Only allow success or failure
-        if ($status !== 'success' && $status !== 'failure') {
-            $status = 'failure';
+        if ($status !== 'success' && $status !== 'failed') {
+            $status = 'failed';
         }
 
         // Get user's IP address

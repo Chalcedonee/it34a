@@ -1,5 +1,4 @@
 <?php
-
 require_once('config/config.php');
 
 $user_id = "root" ?? null;
@@ -15,11 +14,10 @@ $buttons = [
     'Upload File',
     'Download',
     'Search',
-    'Generate Report',
+    'Generate Report'
 ];
 
 ?>
-
 <table border="1" cellpadding="10">
     <tr>
         <th>Action</th>
@@ -36,29 +34,30 @@ $buttons = [
                     <button type="submit">Test</button>
                 </form>
             </td>
-        </tr>
-    <?php endforeach?>
-</table>    
+         </tr>
 
-<?php
+    <?php endforeach;?>
+</table>
+
+<?php 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-        $action= $_POST['action'] ?? "test_activity";
+        $action = $_POST['action'] ?? "test_activity";
 
         $status = random_int(0,1) === 1? 'success' : 'failed';
 
-        $success = LogActivity(
+        $success = logActivity(
             $pdo,
             $user_id,
             $user_email,
             $action,
             $status
         );
-        
+
         if($success){
-            echo"<p> Activity: ". htmlspecialchars($action) .
-            "Status: " . htmlspecialchars($status) . 
-            "Log inserted successfully</p>";
+            echo"<p> Activity: ". htmlspecialchars($action) . 
+            " Status: " . htmlspecialchars($status) . 
+            " Log inserted successfully</p>";
         }else{
             echo "<p>Failed to insert activity log</p>";
         }

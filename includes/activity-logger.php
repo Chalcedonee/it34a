@@ -44,11 +44,13 @@ function logActivity(
             $user_agent = substr($user_agent, 0, 255);
         }
 
-        // user_id is INT(11)
-        if ($user_id === '' || $user_id === null) {
+        // user_id is VARCHAR(255) 
+        if ($user_id === '') {
             $user_id = null;
         } else {
-            $user_id = (int) $user_id;
+            $user_id = $user_id !== null
+                ?substr((string) $user_id, 0, 255)
+                :null;
         }
 
         // user_email can be NULL
@@ -84,7 +86,7 @@ function logActivity(
             $user_id,
             $user_id === null
                 ? PDO::PARAM_NULL
-                : PDO::PARAM_INT
+                : PDO::PARAM_STR
         );
 
         // Email

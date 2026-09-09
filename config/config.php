@@ -15,6 +15,7 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 try {
+
     $pdo = new PDO(
         "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
         DB_USER,
@@ -27,10 +28,21 @@ try {
     );
 
 } catch (PDOException $e) {
+
     die("Database connection failed: " . $e->getMessage());
+
 }
 
-// Load activity logger only if the file exists
+
+// Load application functions
+$functions = __DIR__ . '/functions.php';
+
+if (file_exists($functions)) {
+    require_once $functions;
+}
+
+
+// Load activity logger
 $logger = __DIR__ . '/../includes/activity-logger.php';
 
 if (file_exists($logger)) {

@@ -40,5 +40,15 @@ function loginUser($pdo,$login,$password) {
     $_SESSION['user_role'] = $user['user_role'];
 
     return true;
+function redirect($path)
+{
+    // Make sure the path starts with /
+    if ($path === '' || $path[0] !== '/') {
+        $path = '/' . $path;
+    }
+
+    header('Location: ' . BASE_URL . $path);
+    exit;
 }
+
 ?>

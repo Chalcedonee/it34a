@@ -44,13 +44,11 @@ function logActivity(
             $user_agent = substr($user_agent, 0, 255);
         }
 
-        // user_id is VARCHAR(255) 
-        if ($user_id === '') {
+        // user_id is INT(11)
+        if ($user_id === '' || $user_id === null) {
             $user_id = null;
         } else {
-            $user_id = $user_id !== null
-                ?substr((string) $user_id, 0, 255)
-                :null;
+            $user_id = (int) $user_id;
         }
 
         // user_email can be NULL
@@ -85,8 +83,8 @@ function logActivity(
             ':user_id',
             $user_id,
             $user_id === null
-                ? PDO::PARAM_NULL
-                : PDO::PARAM_STR
+            ? PDO::PARAM_NULL
+            : PDO::PARAM_INT
         );
 
         // Email
@@ -94,8 +92,8 @@ function logActivity(
             ':user_email',
             $user_email,
             $user_email === null
-                ? PDO::PARAM_NULL
-                : PDO::PARAM_STR
+            ? PDO::PARAM_NULL
+            : PDO::PARAM_STR
         );
 
         // Action
@@ -117,8 +115,8 @@ function logActivity(
             ':ip',
             $ip,
             $ip === null
-                ? PDO::PARAM_NULL
-                : PDO::PARAM_STR
+            ? PDO::PARAM_NULL
+            : PDO::PARAM_STR
         );
 
         // User agent
@@ -126,8 +124,8 @@ function logActivity(
             ':user_agent',
             $user_agent,
             $user_agent === null
-                ? PDO::PARAM_NULL
-                : PDO::PARAM_STR
+            ? PDO::PARAM_NULL
+            : PDO::PARAM_STR
         );
 
         // Execute INSERT

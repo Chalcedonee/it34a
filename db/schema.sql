@@ -1,5 +1,4 @@
-CREATE TABLE IF NOT EXISTS activity_logs(
-
+CREATE TABLE IF NOT EXISTS activity_logs (
     activity_log_id INT AUTO_INCREMENT PRIMARY KEY,
 
     user_id VARCHAR(255),
@@ -16,12 +15,12 @@ CREATE TABLE IF NOT EXISTS activity_logs(
     activity_log_user_agent VARCHAR(255),
 
     -- Timestamp
-    activity_log_created_at TIMESTAMP
-        DEFAULT CURRENT_TIMESTAMP
+    activity_log_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 -- Table #3 users table
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS users (
 
     -- Primary key for users table
     user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,12 +31,41 @@ CREATE TABLE IF NOT EXISTS users(
     user_password VARCHAR(255) NOT NULL,
     user_role ENUM('admin', 'manager', 'user') NOT NULL DEFAULT 'user',
 
-    -- User Created Timestamp
+    -- User Created Timestamp default not null
     user_created_at TIMESTAMP
         DEFAULT CURRENT_TIMESTAMP,
 
-    -- User Updated Timestamp
+    -- User updated timestamp
     user_updated_at TIMESTAMP
         DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP
-); 
+);
+
+
+-- Insert query
+INSERT INTO users
+(
+    user_email,
+    user_username,
+    user_password,
+    user_role
+)
+VALUES
+(
+    'admin@example.com',
+    'admin',
+    '$2y$10$HNfhClczEWBxcFuJwP53iu2Y75Tba7IEtmX8vX.1tp0dZ5EVt9CbO',
+    'admin'
+),
+(
+    'manager@example.com',
+    'manager',
+    '$2y$10$HNfhClczEWBxcFuJwP53iu2Y75Tba7IEtmX8vX.1tp0dZ5EVt9CbO',
+    'manager'
+),
+(
+    'user@example.com',
+    'user',
+    '$2y$10$HNfhClczEWBxcFuJwP53iu2Y75Tba7IEtmX8vX.1tp0dZ5EVt9CbO',
+    'user'
+);

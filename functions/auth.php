@@ -1,3 +1,5 @@
+<?php
+
 function loginUser($pdo, $login, $password)
 {
     // Application query #2
@@ -11,7 +13,7 @@ function loginUser($pdo, $login, $password)
             user_role
         FROM users
         WHERE user_email = :login
-           OR user_username = :login
+        OR user_username = :login
         LIMIT 1
     ";
 
@@ -60,3 +62,5 @@ function requireRole($role)
         die('Access Denied');
     }
 }
+
+?>

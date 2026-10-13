@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action,
         $status
     );
-
+}   
     if ($success) {
         echo "<p> Activity: " . htmlspecialchars($action) .
             " Status: " . htmlspecialchars($status) .
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit">Test</button>
                 </form>
             </td>
-         </tr>
+        </tr>
 
     <?php endforeach;?>
 </table>

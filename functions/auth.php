@@ -1,17 +1,5 @@
 <?php
 
-function redirect($path)
-{
-    // Make sure the path starts with /
-    if ($path === '' || $path[0] !== '/') {
-        $path = '/' . $path;
-    }
-
-    header('Location: ' . BASE_URL . $path);
-    exit;
-}
-
-
 function loginUser($pdo, $login, $password)
 {
     // Application query #2
@@ -25,7 +13,7 @@ function loginUser($pdo, $login, $password)
             user_role
         FROM users
         WHERE user_email = :login
-           OR user_username = :login
+        OR user_username = :login
         LIMIT 1
     ";
 

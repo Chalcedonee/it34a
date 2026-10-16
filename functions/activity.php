@@ -1,7 +1,7 @@
 <?php
 
 function logActivity(
-    $pdo,
+    PDO $pdo,
     $user_id = null,
     $user_email = null,
     $action = '',
@@ -83,8 +83,8 @@ function logActivity(
             ':user_id',
             $user_id,
             $user_id === null
-            ? PDO::PARAM_NULL
-            : PDO::PARAM_INT
+                ? PDO::PARAM_NULL
+                : PDO::PARAM_INT
         );
 
         // Email
@@ -92,8 +92,8 @@ function logActivity(
             ':user_email',
             $user_email,
             $user_email === null
-            ? PDO::PARAM_NULL
-            : PDO::PARAM_STR
+                ? PDO::PARAM_NULL
+                : PDO::PARAM_STR
         );
 
         // Action
@@ -115,8 +115,8 @@ function logActivity(
             ':ip',
             $ip,
             $ip === null
-            ? PDO::PARAM_NULL
-            : PDO::PARAM_STR
+                ? PDO::PARAM_NULL
+                : PDO::PARAM_STR
         );
 
         // User agent
@@ -124,13 +124,12 @@ function logActivity(
             ':user_agent',
             $user_agent,
             $user_agent === null
-            ? PDO::PARAM_NULL
-            : PDO::PARAM_STR
+                ? PDO::PARAM_NULL
+                : PDO::PARAM_STR
         );
 
         // Execute INSERT
         return $stmt->execute();
-
     } catch (PDOException $e) {
 
         // Save error in PHP error log
@@ -141,5 +140,3 @@ function logActivity(
         return false;
     }
 }
-
-?>

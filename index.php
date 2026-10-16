@@ -1,101 +1,138 @@
 <?php
-require_once('config/config.php');
 
-$user_id = "root" ?? null;
-$user_email = "root" ?? null;
+session_start();
 
-$buttons = [
-    'Login',
-    'Logout',
-    'Create Record',
-    'Update Record',
-    'Delete Record',
-    'View Record',
-    'Upload File',
-    'Download',
-    'Search',
-    'Generate Report'
-];
+require_once __DIR__ . '/config/config.php';
 
-?>
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Action</th>
-        <th>Test</th>
-    </tr>
-    <?php foreach ($buttons as $button): ?>
-        <tr>
-            <td><?= htmlspecialchars($button) ?></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="action" value="<?= htmlspecialchars($button) ?>">
-                    <button type="submit">Test</button>
-                </form>
-            </td>
-        </tr>
+$error = '';
 
-    <?php endforeach; ?>
-</table>
-
-<?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $action = $_POST['action'] ?? "test_activity";
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    $status = random_int(0, 1) === 1 ? 'success' : 'failed';
+    // Check empty fields
+    if ($username === '' || $password === '') {
 
-    $success = logActivity(
-        $pdo,
-        $user_id,
-        $user_email,
-        $action,
-        $status
-    );
-}   
-    if ($success) {
-        echo "<p> Activity: " . htmlspecialchars($action) .
-            " Status: " . htmlspecialchars($status) .
-            " Log inserted successfully</p>";
+        $error = 'Please enter your username and password.';
     } else {
-        echo "<p>Failed to insert activity log</p>";
-    }
-    <?php foreach($buttons as $button): ?>
-        <tr>
-            <td><?= htmlspecialchars($button)?></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="action"
-                        value="<?= htmlspecialchars($button)?>"
-                    >
-                    <button type="submit">Test</button>
-                </form>
-            </td>
-        </tr>
 
-    <?php endforeach;?>
-</table>
+        // Find user by username
+        $stmt = $pdo->prepare("
+            SELECT
+                user_id,
+                user_username,
+                user_password,
+                user_role
+            FROM users
+            WHERE user_username = ?
+            LIMIT 1
+        ");
 
-<?php 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $stmt->execute([$username]);
 
-        $action = $_POST['action'] ?? "test_activity";
+        $user = $stmt->fetch();
 
-        $status = random_int(0,1) === 1? 'success' : 'failed';
+        // Check username and password
+        if ($user && password_verify($password, $user['user_password'])) {
 
-        $success = logActivity(
-            $pdo,
-            $user_id,
-            $user_email,
-            $action,
-            $status
-        );
+            // Store user information in session
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['username'] = $user['user_username'];
+            $_SESSION['role'] = $user['user_role'];
 
-        if($success){
-            echo"<p> Activity: ". htmlspecialchars($action) . 
-            " Status: " . htmlspecialchars($status) . 
-            " Log inserted successfully</p>";
-        }else{
-            echo "<p>Failed to insert activity log</p>";
+            // Log successful login
+            if (function_exists('logActivity')) {
+                logActivity(
+                    $pdo,
+                    $_SESSION['user_id'],
+                    $_SESSION['username'],
+                    'login',
+                    'success'
+                );
+            }
+
+            // Redirect according to role
+            if ($user['user_role'] === 'admin') {
+
+                header('Location: app/admin/admin.php');
+                exit;
+            } elseif ($user['user_role'] === 'manager') {
+
+                header('Location: app/manager/manager.php');
+                exit;
+            } elseif ($user['user_role'] === 'user') {
+
+                header('Location: app/user/user.php');
+                exit;
+            } else {
+
+                // Unknown role
+                $error = 'Invalid user role.';
+            }
+        } else {
+
+            // Login failed
+            $error = 'Invalid username or password.';
+
+            // Log failed login
+            if (function_exists('logActivity')) {
+                logActivity(
+                    $pdo,
+                    null,
+                    $username,
+                    'login',
+                    'failed'
+                );
+            }
         }
+    }
 }
+
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign In</title>
+</head>
+
+<body>
+
+    <h1>Sign In</h1>
+
+    <?php if ($error !== ''): ?>
+
+        <p style="color: red;">
+            <?= htmlspecialchars($error) ?>
+        </p>
+
+    <?php endif; ?>
+
+    <form method="POST">
+
+        <p>
+            <label for="username">Username:</label>
+
+            <input type="text" id="username" name="username" autocomplete="username" required>
+        </p>
+
+        <p>
+            <label for="password">Password:</label>
+
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </p>
+
+        <button type="submit">
+            SIGN IN
+        </button>
+
+    </form>
+
+</body>
+
+</html>

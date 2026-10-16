@@ -1,53 +1,64 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Start User Session
-function startUserSession($pdo){
+// Check if the user is logged in
+function hasActiveUserSession(PDO $pdo, int $user_id): bool
+{
+    $stmt = $pdo->prepare("
+        SELECT session_id
+        FROM user_sessions
+        WHERE user_id = ?
+          AND session_end IS NULL
+        LIMIT 1
+    ");
 
-    if(!isset(SESSION['user_id'])){
-        return false;
+    $stmt->execute([$user_id]);
+
+    return (bool) $stmt->fetchColumn();
+}
+
+//Record session start in the database and return the session ID
+function startUserSession(PDO $pdo): int
+{
+    $stmt = $pdo->prepare("
+        INSERT INTO user_sessions (user_id, session_start)
+        VALUES (?, NOW())
+    ");
+
+    $stmt->execute([$_SESSION['user_id']]);
+
+    return (int) $pdo->lastInsertId();
+}
+
+//End the user session in the database
+function endUserSession(PDO $pdo): void
+{
+    if (
+        empty($_SESSION['session_id']) ||
+        empty($_SESSION['user_id'])
+    ) {
+        return;
     }
-
-    $user_id = $_SESSION['user_id'];
-
-    $stmt=$pdo->prepare("
-        INSERT INTO user_sessions(
-            user_id,
-            session_start
-        )
-        VALUES(
-            :user_id
-            NOW()
-        )
-    ")
-
-    $stmt->execute([
-        'user_id' => $user_id
-    ]);
-    return $pdo->lastInsertID();
-} 
-
-// End User Session
-function endUserSession($pdo){
-    if(!isset($_SESSION['session_id'])){
-        return false;
-    }
-
-    $session_id = $_SESSION['session_id'];
 
     $stmt = $pdo->prepare("
         UPDATE user_sessions
-        SET 
-            session_end-NOW(),
-            session_duration=TIMESTAMPDIFF(
+        SET
+            session_end = NOW(),
+            session_duration = TIMESTAMPDIFF(
                 SECOND,
                 session_start,
                 NOW()
             )
-        WHERE session_id = :session_id
-    ")
+        WHERE session_id = ?
+          AND user_id = ?
+          AND session_end IS NULL
+    ");
 
-    return $stmt->execute([
-        'session_id' => $session_id
-    ])
+    $stmt->execute([
+        $_SESSION['session_id'],
+        $_SESSION['user_id']
+    ]);
 }

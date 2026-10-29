@@ -77,7 +77,7 @@ $activityLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
               ) ?>
           </td>
           <td><?= htmlspecialchars(
-                $activity['activity_log_user_agent']
+                $activity['activity_log_user_agents']
               ) ?>
           </td>
           <td><?= htmlspecialchars(

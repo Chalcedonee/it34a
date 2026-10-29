@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
 
         <p>
-            <label for="username">Username:</label>
+            <label for="username">Email or Username:</label>
 
             <input type="text" id="username" name="username" autocomplete="username" required>
         </p>
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
 
         <button type="submit">
-            SIGN IN
+            Sign In
         </button>
 
     </form>

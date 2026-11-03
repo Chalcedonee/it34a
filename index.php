@@ -8,6 +8,7 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    requireCsrfToken();
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -99,11 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sign In</title>
+
 </head>
 
 <body>
 
-    <h1>Sign In</h1>
+    <h1>User Login</h1>
 
     <?php if ($error !== ''): ?>
 
@@ -115,17 +117,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST">
 
-        <p>
-            <label for="username">Email or Username:</label>
+    <p>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+        <label for="username">Email or Username:</label>
+        <input type="text" id="username" name="username" autocomplete="username" required>
+    </p>
+    
+    
+    
+    <p>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+    </p>
 
-            <input type="text" id="username" name="username" autocomplete="username" required>
-        </p>
-
-        <p>
-            <label for="password">Password:</label>
-
-            <input type="password" id="password" name="password" autocomplete="current-password" required>
-        </p>
 
         <button type="submit">
             Sign In

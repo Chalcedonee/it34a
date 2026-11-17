@@ -21,10 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Find user by username
         $stmt = $pdo->prepare("
             SELECT
-                user_id,
-                user_username,
-                user_password,
-                user_role
+            user_id,
+            user_email,
+            user_username,
+            user_password,
+            user_role
             FROM users
             WHERE user_username = ?
             LIMIT 1
@@ -39,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Store user information in session
             $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['user_email'] = $user['user_email'];
             $_SESSION['username'] = $user['user_username'];
             $_SESSION['role'] = $user['user_role'];
 
@@ -56,15 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redirect according to role
             if ($user['user_role'] === 'admin') {
 
-                header('Location: app/admin/admin.php');
+                header('Location: app/admin/index.php');
                 exit;
             } elseif ($user['user_role'] === 'manager') {
 
-                header('Location: app/manager/manager.php');
+                header('Location: app/manager/index.php');
                 exit;
             } elseif ($user['user_role'] === 'user') {
 
-                header('Location: app/user/user.php');
+                header('Location: app/user/index.php');
                 exit;
             } else {
 
@@ -117,18 +119,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST">
 
-    <p>
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
-        <label for="username">Email or Username:</label>
-        <input type="text" id="username" name="username" autocomplete="username" required>
-    </p>
-    
-    
-    
-    <p>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" autocomplete="current-password" required>
-    </p>
+        <p>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+            <label for="username">Email or Username:</label>
+            <input type="text" id="username" name="username" autocomplete="username" required>
+        </p>
+
+
+
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </p>
 
 
         <button type="submit">

@@ -84,9 +84,9 @@ if ($action == 'export') {
 
   <a href="../auth/signout.php">Sign Out</a>
 
-  <h4>Activity Logs
-    <a href="index.php?section=activity-logs&amp;action=export">Export CSV</a>
-  </h4>
+  <h4>Activity Logs</h4>
+
+  <a href="index.php?section=activity-logs&amp;action=export">Export Activity Logs - CSV</a>
 
   <table border="1">
     <thead>
